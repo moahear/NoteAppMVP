@@ -3,7 +3,20 @@
     <style name="Base.Theme.NoteAppMVP" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="bottomSheetDialogTheme">@style/CustomBottomSheetThemeOverlay</item>
     </style>
 
     <style name="Theme.NoteAppMVP" parent="Base.Theme.NoteAppMVP" />
+
+    <style name="CustomBottomSheetThemeOverlay" parent="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CustomBottomSheetMaterialComponents</item>
+    </style>
+    <style name="CustomBottomSheetMaterialComponents" parent="Theme.MaterialComponents.BottomSheetDialog">
+        <item name="shapeAppearanceOverlay">@style/MyCustomBottomSheet</item>
+    </style>
+    <style name="MyCustomBottomSheet" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">20dp</item>
+        <item name="cornerSizeTopRight">20dp</item>
+    </style>
 </resources>

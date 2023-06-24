@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Note App MVP</string>
+    <string name="note_app_name">My Note App</string>
+    <string name="search">Search</string>
+    <string name="filter">Filter</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="categories">Categories</string>
+    <string name="save">Save</string>
+    <string name="priority">Priority</string>
 </resources>
