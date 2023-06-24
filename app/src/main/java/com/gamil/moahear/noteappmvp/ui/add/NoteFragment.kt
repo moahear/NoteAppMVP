@@ -5,19 +5,32 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import com.gamil.moahear.noteappmvp.data.model.NoteEntity
+import com.gamil.moahear.noteappmvp.data.repository.add.AddNoteRepository
 import com.gamil.moahear.samplemvp.databinding.FragmentNoteBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.jakewharton.rxbinding4.view.clicks
 import com.jakewharton.rxbinding4.widget.itemSelections
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.functions.Consumer
+import javax.inject.Inject
 
-class NoteFragment : BottomSheetDialogFragment() {
+@AndroidEntryPoint
+class NoteFragment : BottomSheetDialogFragment(), AddContracts.View {
     private lateinit var categories: Array<String>
     private var selectedCategory = ""
     private lateinit var priorities: Array<String>
     private var selectedPriority = ""
+
+    @Inject
+    lateinit var addNoteRepository: AddNoteRepository
+    private val addPresenter by lazy {
+        AddPresenter(addNoteRepository, this)
+    }
+
+    @Inject
+    lateinit var noteEntity: NoteEntity
     private lateinit var binding: FragmentNoteBinding
     private val compositeDisposable by lazy {
         CompositeDisposable()
@@ -39,6 +52,18 @@ class NoteFragment : BottomSheetDialogFragment() {
                 imgClose.clicks().observeOn(AndroidSchedulers.mainThread()).subscribe {
                     this@NoteFragment.dismiss()
                 })
+            btnSave.clicks().observeOn(AndroidSchedulers.mainThread()).subscribe {
+                val title = edtTitle.text.toString()
+                val description = edtDescription.text.toString()
+                noteEntity.apply {
+                    this.title = title
+                    this.description = description
+                    this.priority = priority
+                    this.category = category
+                }
+                //Save
+                addPresenter.saveNote(noteEntity)
+            }
             categoriesSpinnerItems()
             prioritiesSpinnerItems()
         }
@@ -67,8 +92,8 @@ class NoteFragment : BottomSheetDialogFragment() {
         compositeDisposable.add(
             spinnerCategories.itemSelections().skipInitialValue()
                 .observeOn(AndroidSchedulers.mainThread()).subscribe {
-                selectedCategory = categories[it]
-            }
+                    selectedCategory = categories[it]
+                }
         )
     }
 
@@ -102,5 +127,11 @@ class NoteFragment : BottomSheetDialogFragment() {
     override fun onStop() {
         super.onStop()
         compositeDisposable.clear()
+        addPresenter.onStop()
     }
+
+    override fun close() {
+        this.dismiss()
+    }
+
 }

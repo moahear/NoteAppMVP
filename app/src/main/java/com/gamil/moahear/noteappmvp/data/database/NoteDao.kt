@@ -13,10 +13,10 @@ import io.reactivex.rxjava3.core.Observable
 @Dao
 interface NoteDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(noteEntity: NoteEntity): Completable
+    fun saveNote(noteEntity: NoteEntity): Completable
 
     @Delete
-    fun delete(noteEntity: NoteEntity): Completable
+    fun deleteNote(noteEntity: NoteEntity): Completable
 
     @Update
     fun updateNote(noteEntity: NoteEntity): Completable
