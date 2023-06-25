@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.gamil.moahear.noteappmvp.data.model.NoteEntity
 import com.gamil.moahear.noteappmvp.data.repository.add.AddNoteRepository
+import com.gamil.moahear.noteappmvp.utils.Constants
 import com.gamil.moahear.samplemvp.databinding.FragmentNoteBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.jakewharton.rxbinding4.view.clicks
@@ -58,8 +59,8 @@ class NoteFragment : BottomSheetDialogFragment(), AddContracts.View {
                 noteEntity.apply {
                     this.title = title
                     this.description = description
-                    this.priority = priority
-                    this.category = category
+                    this.priority = selectedPriority
+                    this.category = selectedCategory
                 }
                 //Save
                 addPresenter.saveNote(noteEntity)
@@ -70,7 +71,7 @@ class NoteFragment : BottomSheetDialogFragment(), AddContracts.View {
     }
 
     private fun FragmentNoteBinding.categoriesSpinnerItems() {
-        categories = arrayOf("Home", "Work", "Education", "Health", "Other")
+        categories = arrayOf(Constants.HOME, Constants.WORK, Constants.EDUCATION, Constants.HEALTH, Constants.OTHER)
         val categoriesAdapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, categories)
         categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -98,7 +99,7 @@ class NoteFragment : BottomSheetDialogFragment(), AddContracts.View {
     }
 
     private fun FragmentNoteBinding.prioritiesSpinnerItems() {
-        priorities = arrayOf("High", "Normal", "Low")
+        priorities = arrayOf(Constants.HIGH, Constants.NORMAL, Constants.LOW)
         val prioritiesAdapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, priorities)
         prioritiesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
