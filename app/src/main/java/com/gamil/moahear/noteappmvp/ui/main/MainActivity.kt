@@ -3,11 +3,11 @@ package com.gamil.moahear.noteappmvp.ui.main
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.gamil.moahear.noteappmvp.data.model.NoteEntity
 import com.gamil.moahear.noteappmvp.data.repository.main.MainRepository
 import com.gamil.moahear.noteappmvp.ui.add.NoteFragment
+import com.gamil.moahear.noteappmvp.utils.Constants
 import com.gamil.moahear.samplemvp.databinding.ActivityMainBinding
 import com.jakewharton.rxbinding4.view.clicks
 import dagger.hilt.android.AndroidEntryPoint
@@ -50,8 +50,17 @@ class MainActivity : AppCompatActivity(), MainContracts.View {
             //Show Notes
             mainPresenter.getNotes()
         }
-        notesAdapter.onNoteClick {
-            Toast.makeText(this@MainActivity, it.toString(), Toast.LENGTH_SHORT).show()
+        //Click popup menu item
+        notesAdapter.onNoteClick { noteEntity, state ->
+            when (state) {
+                Constants.EDIT -> {
+
+                }
+
+                Constants.DELETE -> {
+
+                }
+            }
         }
     }
 

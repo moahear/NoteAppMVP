@@ -1,7 +1,9 @@
 package com.gamil.moahear.noteappmvp.ui.main
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -18,10 +20,41 @@ class NotesAdapter @Inject constructor() : RecyclerView.Adapter<NotesAdapter.Not
         RecyclerView.ViewHolder(binding.root) {
         fun bindNote(noteEntity: NoteEntity) {
             binding.apply {
-                root.setOnClickListener {
-                    setOnNoteClickListener?.let {
-                        it(noteEntity)
+                imgMenu.setOnClickListener {
+                    val popupMenu = PopupMenu(it.context, it)
+                    popupMenu.menuInflater.inflate(R.menu.menu_popup_item, popupMenu.menu)
+                    //Show popup menu with icon
+                    try {
+                        val fieldMPopup = PopupMenu::class.java.getDeclaredField("mPopup")
+                        fieldMPopup.isAccessible = true
+                        val mPopup = fieldMPopup.get(popupMenu)
+                        mPopup.javaClass
+                            .getDeclaredMethod("setForceShowIcon", Boolean::class.java)
+                            .invoke(mPopup, true)
+                    } catch (e: Exception) {
+                        Log.e("Main", "Error showing menu icons.", e)
+                    } finally {
+                        popupMenu.show()
                     }
+
+
+                    popupMenu.setOnMenuItemClickListener { menuItem ->
+                        when (menuItem.itemId) {
+                            R.id.delete_item -> {
+                                setOnNoteClickListener?.let {
+                                    it(noteEntity, Constants.DELETE)
+                                }
+                            }
+
+                            R.id.edit_item -> {
+                                setOnNoteClickListener?.let {
+                                    it(noteEntity, Constants.EDIT)
+                                }
+                            }
+                        }
+                        return@setOnMenuItemClickListener true
+                    }
+
                 }
                 txtTitle.text = noteEntity.title
                 txtDescription.text = noteEntity.description
@@ -49,12 +82,12 @@ class NotesAdapter @Inject constructor() : RecyclerView.Adapter<NotesAdapter.Not
 
                 }
                 //Category
-                when(noteEntity.category){
-                    Constants.HOME->imgCategory.setImageResource(R.drawable.home)
-                    Constants.WORK->imgCategory.setImageResource(R.drawable.work)
-                    Constants.HEALTH->imgCategory.setImageResource(R.drawable.healthcare)
-                    Constants.EDUCATION->imgCategory.setImageResource(R.drawable.education)
-                    Constants.OTHER->imgCategory.setImageResource(R.drawable.ic_other_note)
+                when (noteEntity.category) {
+                    Constants.HOME -> imgCategory.setImageResource(R.drawable.home)
+                    Constants.WORK -> imgCategory.setImageResource(R.drawable.work)
+                    Constants.HEALTH -> imgCategory.setImageResource(R.drawable.healthcare)
+                    Constants.EDUCATION -> imgCategory.setImageResource(R.drawable.education)
+                    Constants.OTHER -> imgCategory.setImageResource(R.drawable.ic_other_note)
                 }
 
             }
@@ -75,10 +108,11 @@ class NotesAdapter @Inject constructor() : RecyclerView.Adapter<NotesAdapter.Not
         holder.bindNote(notes[position])
     }
 
-    private var setOnNoteClickListener:((NoteEntity)->Unit)?=null
-    fun onNoteClick(listener:(NoteEntity)->Unit){
-        setOnNoteClickListener=listener
+    private var setOnNoteClickListener: ((NoteEntity, String) -> Unit)? = null
+    fun onNoteClick(listener: (NoteEntity, String) -> Unit) {
+        setOnNoteClickListener = listener
     }
+
     private class NotesDiffUtilCallback(
         val oldNotes: List<NoteEntity>,
         val newNotes: List<NoteEntity>

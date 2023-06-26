@@ -15,4 +15,8 @@ object Constants {
     const val OTHER = "other"
 
 
+    const val EDIT = "edit"
+    const val DELETE = "delete"
+
+
 }
