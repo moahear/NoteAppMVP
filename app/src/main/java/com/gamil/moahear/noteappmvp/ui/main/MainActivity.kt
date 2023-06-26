@@ -16,15 +16,23 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(),MainContracts.View {
+class MainActivity : AppCompatActivity(), MainContracts.View {
     private lateinit var binding: ActivityMainBinding
+
     @Inject
     lateinit var notesAdapter: NotesAdapter
+
     @Inject
     lateinit var mainRepository: MainRepository
-    private val mainPresenter by lazy{
+
+    //region mainPresenter
+    @Inject
+    lateinit var mainPresenter: MainPresenter
+
+    /*private val mainPresenter by lazy{
         MainPresenter(mainRepository,this)
-    }
+    }*/
+    //endregion
     private val compositeDisposable by lazy {
         CompositeDisposable()
     }
@@ -57,8 +65,9 @@ class MainActivity : AppCompatActivity(),MainContracts.View {
             containerEmpty.visibility = View.GONE
             rvNotes.visibility = View.VISIBLE
             notesAdapter.submitNewNotes(notes)
-            rvNotes.layoutManager=StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
-            rvNotes.adapter=notesAdapter
+            rvNotes.layoutManager =
+                StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            rvNotes.adapter = notesAdapter
         }
 
     }

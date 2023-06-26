@@ -6,15 +6,17 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
-class MainPresenter @Inject constructor(private val mainRepository: MainRepository,private val view:MainContracts.View):MainContracts.Presenter,BasePresenterImpl() {
+class MainPresenter @Inject constructor(
+    private val mainRepository: MainRepository,
+    private val view: MainContracts.View
+) : MainContracts.Presenter, BasePresenterImpl() {
     override fun getNotes() {
-        disposable=mainRepository.getNotes().subscribeOn(Schedulers.io())
+        disposable = mainRepository.getNotes().subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 if (it.isNotEmpty()) {
                     view.showNotes(it)
-                }
-                else{
+                } else {
                     view.showEmpty()
                 }
             }

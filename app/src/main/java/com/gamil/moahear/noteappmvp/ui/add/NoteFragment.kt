@@ -26,10 +26,15 @@ class NoteFragment : BottomSheetDialogFragment(), AddContracts.View {
 
     @Inject
     lateinit var addNoteRepository: AddNoteRepository
-    private val addPresenter by lazy {
-        AddPresenter(addNoteRepository, this)
-    }
 
+    //region addPresenter
+    @Inject
+    lateinit var addPresenter: AddPresenter
+
+    /* private val addPresenter by lazy {
+         AddPresenter(addNoteRepository, this)
+     }*/
+    //endregion
     @Inject
     lateinit var noteEntity: NoteEntity
     private lateinit var binding: FragmentNoteBinding
@@ -71,7 +76,13 @@ class NoteFragment : BottomSheetDialogFragment(), AddContracts.View {
     }
 
     private fun FragmentNoteBinding.categoriesSpinnerItems() {
-        categories = arrayOf(Constants.HOME, Constants.WORK, Constants.EDUCATION, Constants.HEALTH, Constants.OTHER)
+        categories = arrayOf(
+            Constants.HOME,
+            Constants.WORK,
+            Constants.EDUCATION,
+            Constants.HEALTH,
+            Constants.OTHER
+        )
         val categoriesAdapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, categories)
         categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
