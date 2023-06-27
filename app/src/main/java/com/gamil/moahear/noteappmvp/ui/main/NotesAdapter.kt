@@ -1,6 +1,5 @@
 package com.gamil.moahear.noteappmvp.ui.main
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
@@ -23,8 +22,12 @@ class NotesAdapter @Inject constructor() : RecyclerView.Adapter<NotesAdapter.Not
                 imgMenu.setOnClickListener {
                     val popupMenu = PopupMenu(it.context, it)
                     popupMenu.menuInflater.inflate(R.menu.menu_popup_item, popupMenu.menu)
-                    //Show popup menu with icon
-                    try {
+                    //region Show popup menu with icon
+                    popupMenu.setForceShowIcon(true)
+                    popupMenu.show()
+                   /*
+                   second way
+                   try {
                         val fieldMPopup = PopupMenu::class.java.getDeclaredField("mPopup")
                         fieldMPopup.isAccessible = true
                         val mPopup = fieldMPopup.get(popupMenu)
@@ -35,9 +38,8 @@ class NotesAdapter @Inject constructor() : RecyclerView.Adapter<NotesAdapter.Not
                         Log.e("Main", "Error showing menu icons.", e)
                     } finally {
                         popupMenu.show()
-                    }
-
-
+                    }*/
+                    //endregion
                     popupMenu.setOnMenuItemClickListener { menuItem ->
                         when (menuItem.itemId) {
                             R.id.delete_item -> {

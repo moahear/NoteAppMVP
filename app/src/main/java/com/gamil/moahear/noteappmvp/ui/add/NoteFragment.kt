@@ -23,6 +23,8 @@ class NoteFragment : BottomSheetDialogFragment(), AddContracts.View {
     private var selectedCategory = ""
     private lateinit var priorities: Array<String>
     private var selectedPriority = ""
+    private var noteId = 0
+    private var type = ""
 
     @Inject
     lateinit var addNoteRepository: AddNoteRepository
@@ -53,11 +55,29 @@ class NoteFragment : BottomSheetDialogFragment(), AddContracts.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //Arguments
+        noteId = arguments?.getInt(Constants.BUNDLE_NOTE_ID) ?: 0
+
+        type = if (noteId > 0) {
+            Constants.EDIT
+        } else {
+            Constants.NEW
+        }
         binding.apply {
             compositeDisposable.add(
                 imgClose.clicks().observeOn(AndroidSchedulers.mainThread()).subscribe {
                     this@NoteFragment.dismiss()
                 })
+
+            categoriesSpinnerItems()
+            prioritiesSpinnerItems()
+
+            //show note to edit
+            if (type == Constants.EDIT) {
+                addPresenter.getNote(noteId)
+            }
+
+
             btnSave.clicks().observeOn(AndroidSchedulers.mainThread()).subscribe {
                 val title = edtTitle.text.toString()
                 val description = edtDescription.text.toString()
@@ -66,12 +86,17 @@ class NoteFragment : BottomSheetDialogFragment(), AddContracts.View {
                     this.description = description
                     this.priority = selectedPriority
                     this.category = selectedCategory
+                    this.id = noteId
                 }
                 //Save
-                addPresenter.saveNote(noteEntity)
+                if (type == Constants.NEW) {
+                    addPresenter.saveNote(noteEntity)
+                } else {
+                    addPresenter.updateNote(noteEntity)
+                }
             }
-            categoriesSpinnerItems()
-            prioritiesSpinnerItems()
+
+
         }
     }
 
@@ -144,6 +169,23 @@ class NoteFragment : BottomSheetDialogFragment(), AddContracts.View {
 
     override fun close() {
         this.dismiss()
+    }
+
+    private fun getIndex(list: Array<String>, item: String): Int {
+        return list.indexOf(item)
+    }
+
+    override fun showNote(noteEntity: NoteEntity) {
+        if (this.isAdded) {
+            requireActivity().runOnUiThread {
+                binding.apply {
+                    edtDescription.setText(noteEntity.description)
+                    edtTitle.setText(noteEntity.title)
+                    spinnerCategories.setSelection(categories.indexOf(noteEntity.category))
+                    spinnerPriority.setSelection(priorities.indexOf(noteEntity.priority))
+                }
+            }
+        }
     }
 
 }

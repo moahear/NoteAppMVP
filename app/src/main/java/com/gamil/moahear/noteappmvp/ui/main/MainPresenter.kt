@@ -1,5 +1,6 @@
 package com.gamil.moahear.noteappmvp.ui.main
 
+import com.gamil.moahear.noteappmvp.data.model.NoteEntity
 import com.gamil.moahear.noteappmvp.data.repository.main.MainRepository
 import com.gamil.moahear.noteappmvp.utils.base.BasePresenterImpl
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -19,6 +20,14 @@ class MainPresenter @Inject constructor(
                 } else {
                     view.showEmpty()
                 }
+            }
+    }
+
+    override fun deleteNote(noteEntity: NoteEntity) {
+        disposable=mainRepository.deleteNote(noteEntity).subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                view.showDeleteMessage()
             }
     }
 

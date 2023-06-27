@@ -17,6 +17,10 @@ object Constants {
 
     const val EDIT = "edit"
     const val DELETE = "delete"
+    const val NEW = "new"
+
+
+    const val BUNDLE_NOTE_ID = "bundle_note_id"
 
 
 }
