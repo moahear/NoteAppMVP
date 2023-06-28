@@ -3,6 +3,7 @@ package com.gamil.moahear.noteappmvp.ui.main
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.gamil.moahear.noteappmvp.data.model.NoteEntity
 import com.gamil.moahear.noteappmvp.data.repository.main.MainRepository
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity(), MainContracts.View {
 
     @Inject
     lateinit var mainRepository: MainRepository
+    private var selectedPriorityFilter = -1
 
     //region mainPresenter
     @Inject
@@ -43,7 +45,9 @@ class MainActivity : AppCompatActivity(), MainContracts.View {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         binding.apply {
+            //setSupportActionBar(toolbarNotes)
             //Add note
             compositeDisposable.add(btnAdd.clicks().observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -51,6 +55,20 @@ class MainActivity : AppCompatActivity(), MainContracts.View {
                 })
             //Show Notes
             mainPresenter.getNotes()
+
+            //Filter
+            toolbarNotes.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.action_filter -> {
+                        filterByPriority()
+                        return@setOnMenuItemClickListener true
+                    }
+
+                    else -> {
+                        return@setOnMenuItemClickListener false
+                    }
+                }
+            }
         }
         //Click popup menu item
         notesAdapter.onNoteClick { noteEntity, state ->
@@ -99,4 +117,27 @@ class MainActivity : AppCompatActivity(), MainContracts.View {
         Snackbar.make(binding.root, getString(R.string.delete_message), Snackbar.LENGTH_LONG).show()
     }
 
+    private fun filterByPriority() {
+        val alertDialogBuilder = AlertDialog.Builder(this@MainActivity)
+        alertDialogBuilder.setTitle("Select priority filter from below")
+        val priorities = arrayOf(Constants.NO_FILTER, Constants.HIGH, Constants.NORMAL, Constants.LOW)
+        alertDialogBuilder.setSingleChoiceItems(
+            priorities,
+            selectedPriorityFilter
+        ) { dialog, index ->
+
+            when (index) {
+                0 -> {
+                    mainPresenter.getNotes()
+                }
+
+                in 1..3 -> {
+                    mainPresenter.filterNotesWithPriority(priorities[index])
+                }
+            }
+            selectedPriorityFilter = index
+            dialog.dismiss()
+        }
+        alertDialogBuilder.create().show()
+    }
 }

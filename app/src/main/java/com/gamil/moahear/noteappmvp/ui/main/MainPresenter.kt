@@ -31,4 +31,18 @@ class MainPresenter @Inject constructor(
             }
     }
 
+    override fun filterNotesWithPriority(priority: String) {
+        disposable=mainRepository.filterNotesWithPriority(priority)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (it.isNotEmpty()){
+                   view.showNotes(it)
+                }
+                else{
+                    view.showEmpty()
+                }
+            }
+    }
+
 }

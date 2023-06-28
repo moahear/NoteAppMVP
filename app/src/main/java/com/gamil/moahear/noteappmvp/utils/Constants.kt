@@ -4,6 +4,7 @@ object Constants {
     const val NOTES_DATABASE = "notes_database"
     const val NOTES_TABLE = "notes_table"
 
+    const val NO_FILTER = "No filter"
     const val HIGH = "High"
     const val LOW = "Low"
     const val NORMAL = "Normal"

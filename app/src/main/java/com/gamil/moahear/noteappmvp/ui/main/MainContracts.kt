@@ -13,5 +13,7 @@ interface MainContracts {
     interface Presenter : BasePresenter {
         fun getNotes()
         fun deleteNote(noteEntity: NoteEntity)
+
+        fun filterNotesWithPriority(priority:String)
     }
 }
